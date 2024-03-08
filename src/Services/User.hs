@@ -8,3 +8,4 @@ createNewUser username password =
     writeUserData user
     where
         user = buildUser username password
+        
