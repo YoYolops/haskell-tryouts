@@ -1,8 +1,7 @@
-module Repositories.User (loadUsers) where
-    
-import System.IO
+module Repositories.User (loadUsers, buildUser, writeUserData) where
 
-data User = User { username :: String, password :: String }
+import System.IO
+import Models.User (User(..))
 
 readUserDataFile :: FilePath -> IO String
 readUserDataFile path = do
@@ -10,14 +9,14 @@ readUserDataFile path = do
     return content
 
 buildUser :: String -> String -> User
-buildUser username password = User { username = username, password = password }
+buildUser uname pass = User { username = uname, password = pass }
 
-writeUser :: User -> IO()
-writeUser (User name password) = do
+writeUserData :: User -> IO User
+writeUserData user@(User name password) = do
     let path = "Repositories/data/users.txt"
-    let data = name ++ ";" ++  password
-    writeFile path data
-
+    let userData = name ++ ";" ++  password
+    writeFile path userData
+    return user
 
 loadUsers :: IO ()
 loadUsers = do
