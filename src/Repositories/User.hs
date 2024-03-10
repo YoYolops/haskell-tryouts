@@ -1,27 +1,30 @@
-module Repositories.User (loadUsers) where
-    
-import System.IO
+module Repositories.User (loadUsers, buildUser, writeUserData) where
 
-data User = User { username :: String, password :: String }
+import System.IO
+import Data.List.Split (splitOn)
+import Models.User (User(..))
+import Control.Monad (liftM)
 
 readUserDataFile :: FilePath -> IO String
-readUserDataFile path = do
-    content <- readFile path
-    return content
+readUserDataFile path = 
+    content
+    where
+        content = readFile path
+
+readUserDataFileAsString :: FilePath -> IO String
+readUserDataFileAsString path = fmap id (readUserDataFile path)
 
 buildUser :: String -> String -> User
-buildUser username password = User { username = username, password = password }
+buildUser uname pass = User { username = uname, password = pass }
 
-writeUser :: User -> IO()
-writeUser (User name password) = do
+writeUserData :: User -> IO User
+writeUserData user@(User name password) = do
     let path = "Repositories/data/users.txt"
-    let data = name ++ ";" ++  password
-    writeFile path data
+    let userData = name ++ ";" ++  password
+    writeFile path userData
+    return user
 
-
-loadUsers :: IO ()
-loadUsers = do
-    let filePath = "Repositories/data/users.txt"
-    content <- readUserDataFile filePath
-    putStrLn $ "Content:\n" ++ content
-
+loadUsers :: [String]
+loadUsers =
+    let contents = readUserDataFileAsString "Repositories/data/users.txt" -- contents :: IO String
+    in splitOn "\n" <$> contents  -- splitOn "\n" <$> contents :: IO [String]

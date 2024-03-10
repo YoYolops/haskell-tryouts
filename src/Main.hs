@@ -1,5 +1,8 @@
 import System.IO
-import Repositories.User (loadUsers)
+import Repositories.User (loadUsers, buildUser, writeUserData)
+import Services.User (createNewUser)
 
 main :: IO ()
-main = loadUsers
+main = do
+    createNewUser "Yohan" "ZECAPadoguinho"
+    loadUsers
